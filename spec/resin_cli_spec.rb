@@ -5,7 +5,9 @@ describe Resin::CLI, "execute" do
   def run(input)
     stdout_io = StringIO.new
     stdin_io = StringIO.new(input)
-    Resin::CLI.execute(stdout_io, stdin_io, [])
+    stderr_io = StringIO.new
+    logger = Logger.new(stderr_io)
+    Resin::CLI.execute(stdout_io, stdin_io, logger)
     stdout_io.rewind
     stdout_io.read
   end

@@ -6,5 +6,7 @@ rescue LoadError
   require 'spec'
 end
 
+require 'logger'
+
 $:.unshift(File.dirname(__FILE__) + '/../lib')
 require 'resin'

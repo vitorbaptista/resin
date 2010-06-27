@@ -5,6 +5,7 @@
 
 require 'rubygems'
 require File.expand_path(File.dirname(__FILE__) + "/../lib/resin")
+require 'logger'
 require "resin/cli"
 
-Resin::CLI.execute(STDOUT, STDIN, ARGV)
+Resin::CLI.execute(STDOUT, STDIN, Logger.new(STDERR))
