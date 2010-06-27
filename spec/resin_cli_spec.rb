@@ -32,83 +32,85 @@ describe Resin::CLI, "execute" do
     batch_test(input_tests, "")
   end
 
-  it "should not accept phrases in the form SUJEITO" do
-    input_tests = ["SUJEITO"]
+  it "should not accept phrases without FIM_DE_FRASE" do
+    input_tests = ["SUJEITO", "SUBSTANTIVO", "SINTAGMA_VERBAL", "ARTIGO", "PRONOME", "CONECTIVO", "VERBO",
+                   "SUBSTANTIVO CONECTIVO SUBSTANTIVO", "SUBSTANTIVO CONECTIVO SUBSTANTIVO CONECTIVO SUBSTANTIVO",
+                   "ARTIGO SUBSTANTIVO", "ARTIGO SUBSTANTIVO CONECTIVO ARTIGO SUBSTANTIVO",
+                   "PRONOME CONECTIVO PRONOME", "PRONOME SUBSTANTIVO", "PRONOME SUBSTANTIVO CONECTIVO PRONOME SUBSTANTIVO",
+                   "SUJEITO|SUBSTANTIVO|SINTAGMA_VERBAL|ARTIGO|PRONOME|CONECTIVO|VERBO",
+                   "ARTIGO|PRONOME|SUBSTANTIVO ARTIGO|PRONOME|SUBSTANTIVO"]
     batch_test(input_tests, "ERRO")
   end
 
-  it "should not accept phrases in the form SUBSTANTIVO" do
-    input_tests = ["SUBSTANTIVO"]
-    batch_test(input_tests, "ERRO")
-  end
-
-  it "should not accept phrases in the form SUBSTANTIVO (CONECTIVO SUBSTANTIVO)+" do
-    input_tests = ["SUBSTANTIVO CONECTIVO SUBSTANTIVO", "SUBSTANTIVO CONECTIVO SUBSTANTIVO CONECTIVO SUBSTANTIVO"]
-    batch_test(input_tests, "ERRO")
-  end
-
-  it "should not accept phrases in the form FIM_DE_FRASE" do
+  it "should not accept FIM_DE_FRASE" do
     input_tests = ["FIM_DE_FRASE"]
     batch_test(input_tests, "ERRO")
   end
 
-  it "should accept phrases in the form SUJEITO FIM_DE_FRASE" do
+  it "should accept SUJEITO FIM_DE_FRASE" do
     input_tests = ["SUJEITO FIM_DE_FRASE"]
     batch_test(input_tests, "")
   end
 
-  it "should accept phrases in the form SINTAGMA_VERBAL FIM_DE_FRASE" do
+  it "should accept SINTAGMA_VERBAL FIM_DE_FRASE" do
     input_tests = ["SINTAGMA_VERBAL FIM_DE_FRASE"]
     batch_test(input_tests, "")
   end
 
-  it "should accept phrases in the form SUJEITO SINTAGMA_VERBAL FIM_DE_FRASE" do
+  it "should accept SUJEITO SINTAGMA_VERBAL FIM_DE_FRASE" do
     input_tests = ["SUJEITO SINTAGMA_VERBAL FIM_DE_FRASE"]
     batch_test(input_tests, "")
   end
 
-  it "should accept phrases in the form SUBSTANTIVO FIM_DE_FRASE" do
-    input_tests = ["SUBSTANTIVO FIM_DE_FRASE"]
+  it "should accept VERBO FIM_DE_FRASE" do
+    input_tests = ["VERBO FIM_DE_FRASE"]
     batch_test(input_tests, "")
   end
 
-  it "should accept phrases in the form SUBSTANTIVO (CONECTIVO SUBSTANTIVO)+ FIM_DE_FRASE" do
-    input_tests = ["SUBSTANTIVO CONECTIVO SUBSTANTIVO FIM_DE_FRASE", "SUBSTANTIVO CONECTIVO SUBSTANTIVO CONECTIVO SUBSTANTIVO FIM_DE_FRASE"]
+  it "should accept SUJEITO VERBO FIM_DE_FRASE" do
+    input_tests = ["SUJEITO VERBO FIM_DE_FRASE"]
     batch_test(input_tests, "")
   end
 
-  it "should accept phrases in the form ARTIGO SUBSTANTIVO FIM_DE_FRASE" do
-    input_tests = ["ARTIGO SUBSTANTIVO FIM_DE_FRASE"]
+  it "should accept SUBSTANTIVO (CONECTIVO SUBSTANTIVO)* FIM_DE_FRASE" do
+    input_tests = ["SUBSTANTIVO FIM_DE_FRASE", "SUBSTANTIVO CONECTIVO SUBSTANTIVO FIM_DE_FRASE",
+                   "SUBSTANTIVO CONECTIVO SUBSTANTIVO CONECTIVO SUBSTANTIVO FIM_DE_FRASE"]
     batch_test(input_tests, "")
   end
 
-  it "should accept phrases in the form ARTIGO SUBSTANTIVO (CONECTIVO ARTIGO SUBSTANTIVO)+ FIM_DE_FRASE" do
-    input_tests = ["ARTIGO SUBSTANTIVO CONECTIVO ARTIGO SUBSTANTIVO FIM_DE_FRASE"]
+  it "should accept ARTIGO SUBSTANTIVO (CONECTIVO ARTIGO SUBSTANTIVO)* FIM_DE_FRASE" do
+    input_tests = ["ARTIGO SUBSTANTIVO FIM_DE_FRASE", "ARTIGO SUBSTANTIVO CONECTIVO ARTIGO SUBSTANTIVO FIM_DE_FRASE",
+                   "ARTIGO SUBSTANTIVO CONECTIVO ARTIGO SUBSTANTIVO CONECTIVO ARTIGO SUBSTANTIVO FIM_DE_FRASE"]
     batch_test(input_tests, "")
   end
 
-  it "should accept phrases in the form PRONOME FIM_DE_FRASE" do
-    input_tests = ["PRONOME SUBSTANTIVO FIM_DE_FRASE"]
+  it "should accept PRONOME (CONECTIVO PRONOME)* FIM_DE_FRASE" do
+    input_tests = ["PRONOME FIM_DE_FRASE", "PRONOME CONECTIVO PRONOME FIM_DE_FRASE",
+                   "PRONOME CONECTIVO PRONOME CONECTIVO PRONOME FIM_DE_FRASE"]
     batch_test(input_tests, "")
   end
 
-  it "should accept phrases in the form PRONOME (CONECTIVO PRONOME)+ FIM_DE_FRASE" do
-    input_tests = ["PRONOME CONECTIVO PRONOME FIM_DE_FRASE"]
+  it "should accept PRONOME SUBSTANTIVO (CONECTIVO PRONOME SUBSTANTIVO)* FIM_DE_FRASE" do
+    input_tests = ["PRONOME SUBSTANTIVO FIM_DE_FRASE", "PRONOME SUBSTANTIVO CONECTIVO PRONOME SUBSTANTIVO FIM_DE_FRASE",
+                   "PRONOME SUBSTANTIVO CONECTIVO PRONOME SUBSTANTIVO CONECTIVO PRONOME SUBSTANTIVO FIM_DE_FRASE"]
     batch_test(input_tests, "")
   end
 
-
-
-  it "should accept phrases in the form PRONOME SUBSTANTIVO FIM_DE_FRASE" do
-    input_tests = ["PRONOME SUBSTANTIVO FIM_DE_FRASE"]
+  it "should accept SUJEITO|SINTAGMA_VERBAL FIM_DE_FRASE" do
+    input_tests = ["SUJEITO|SINTAGMA_VERBAL FIM_DE_FRASE"]
     batch_test(input_tests, "")
   end
 
-  it "should accept phrases in the form PRONOME SUBSTANTIVO (CONECTIVO PRONOME SUBSTANTIVO)+ FIM_DE_FRASE" do
-    input_tests = ["PRONOME SUBSTANTIVO CONECTIVO PRONOME SUBSTANTIVO FIM_DE_FRASE"]
+  it "should accept ARTIGO|SUBSTANTIVO ARTIGO|SUBSTANTIVO (CONECTIVO ARTIGO|SUBSTANTIVO ARTIGO|SUBSTANTIVO)* FIM_DE_FRASE" do
+    input_tests = ["ARTIGO|SUBSTANTIVO ARTIGO|SUBSTANTIVO FIM_DE_FRASE",
+                   "ARTIGO|SUBSTANTIVO ARTIGO|SUBSTANTIVO CONECTIVO ARTIGO|SUBSTANTIVO ARTIGO|SUBSTANTIVO FIM_DE_FRASE",
+                   "ARTIGO|SUBSTANTIVO CONECTIVO ARTIGO|SUBSTANTIVO CONECTIVO ARTIGO|SUBSTANTIVO FIM_DE_FRASE"]
+    batch_test(input_tests, "")
+ end
+
+  it "should accept ARTIGO|PRONOME|SUBSTANTIVO+ (CONECTIVO ARTIGO|PRONOME|SUBSTANTIVO)* FIM_DE_FRASE" do
+    input_tests = ["ARTIGO|PRONOME|SUBSTANTIVO FIM_DE_FRASE", "ARTIGO|PRONOME|SUBSTANTIVO CONECTIVO ARTIGO|PRONOME|SUBSTANTIVO FIM_DE_FRASE",
+                   "ARTIGO|PRONOME|SUBSTANTIVO CONECTIVO ARTIGO|PRONOME|SUBSTANTIVO CONECTIVO ARTIGO|PRONOME|SUBSTANTIVO FIM_DE_FRASE"]
     batch_test(input_tests, "")
   end
-
-
-
 end

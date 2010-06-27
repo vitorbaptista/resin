@@ -13,7 +13,16 @@ module Resin
     def self.execute(stdout=STDOUT, stdin=STDIN, arguments=[])
       s = stdin.read
       s = s.gsub(/\n/, ' ').strip.split
-      stdout.puts "ERRO" if !analyze_phrase(s)
+      s.each_index { |i|
+        s[i] = s[i].split('|') if s[i].split('|').length > 1
+      }
+
+      success = false
+      permute(s).each { |value|
+        success = analyze_phrase(value)
+        break if success
+      }
+      stdout.puts "ERRO" if !success && !s.empty?
     end
 
     private
@@ -43,6 +52,26 @@ module Resin
         }
 
         nil
+    end
+
+    def self.permute(list)
+        res = []
+        array_indexes = []
+        arrays = []
+        list.each_with_index { |e, i| 
+            if e.class == Array
+                array_indexes << i
+                arrays << e
+            end
+        }
+        return [list] if arrays.empty?
+
+        arrays_products = arrays[0].product(*arrays[1..-1])
+        arrays_products.each { |p|
+            res << Array.new(list)
+            array_indexes.each_with_index { |e, i| res.last[e] = p[i] }
+        }
+        res
     end
   end
 end
