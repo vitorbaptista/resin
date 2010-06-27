@@ -49,6 +49,11 @@ describe Resin::CLI, "execute" do
     batch_test(input_tests, "ERRO")
   end
 
+  it "should not accept anything that ends with FRASE" do
+    input_tests = ["QUALQUER COISA TERMINANDO COM FRASE"]
+    batch_test(input_tests, "ERRO")
+  end
+
   it "should accept SUJEITO FIM_DE_FRASE" do
     input_tests = ["SUJEITO FIM_DE_FRASE"]
     batch_test(input_tests, "")
