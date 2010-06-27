@@ -17,7 +17,15 @@ module Resin
                            ['SINTAGMA_ADVERBIAL', 'CONECTIVO', 'SUJEITO', 'SINTAGMA_VERBAL', 'SINTAGMA_ADVERBIAL', 'FIM_DE_FRASE'],
                            ['SINTAGMA_ADVERBIAL', 'CONECTIVO', 'SUJEITO', 'FIM_DE_FRASE'],
                            ['SUJEITO', 'SINTAGMA_VERBAL', 'SINTAGMA_ADVERBIAL', 'FIM_DE_FRASE'],
-                           ['SINTAGMA_ADVERBIAL', 'FIM_DE_FRASE']] }
+                           ['SINTAGMA_ADVERBIAL', 'FIM_DE_FRASE'],
+
+                           # Com sintagma adjetivo
+                           ['SUJEITO', 'SINTAGMA_ADJETIVO', 'FIM_DE_FRASE'],
+                           ['SINTAGMA_VERBAL', 'SINTAGMA_ADJETIVO',  'FIM_DE_FRASE'],
+                           ['SUJEITO', 'SINTAGMA_VERBAL', 'SINTAGMA_ADJETIVO',  'FIM_DE_FRASE'],
+                           ['SINTAGMA_ADVERBIAL', 'CONECTIVO', 'SUJEITO', 'SINTAGMA_VERBAL', 'SINTAGMA_ADJETIVO',  'SINTAGMA_ADVERBIAL', 'FIM_DE_FRASE'],
+                           ['SINTAGMA_ADVERBIAL', 'CONECTIVO', 'SUJEITO', 'SINTAGMA_ADJETIVO',  'FIM_DE_FRASE'],
+                           ['SUJEITO', 'SINTAGMA_VERBAL', 'SINTAGMA_ADJETIVO',  'SINTAGMA_ADVERBIAL', 'FIM_DE_FRASE']] }
 
     def self.execute(stdout=STDOUT, stdin=STDIN, log=Logger.new(STDERR))
       @log = log
