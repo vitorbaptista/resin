@@ -42,7 +42,7 @@ module Resin
       permute(s).each { |value|
         result = analyze_phrase(value)
         @log.debug "Result: #{result.inspect}"
-        success = result && result.length == 1 && GOAL.keys.include?(result[0])
+        success = result && result.length == 1 && GOAL.keys.include?(result[0].gsub(/\(.*\)$/, ''))
         break if success
       }
       stdout.puts "ERRO" if !success && !s.empty?
