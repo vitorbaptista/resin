@@ -81,7 +81,7 @@ module Resin
         flexoes.delete(nil)
         @log.debug "Flexões: #{flexoes.inspect}"
         flexoes.uniq!
-        flexoes.length != 1
+        flexoes.length > 1
     end
 
     def self.reduce!(stack, rules = RULES)
