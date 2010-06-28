@@ -42,17 +42,17 @@ describe Resin::CLI, "execute" do
                    "PRONOME CONECTIVO PRONOME", "PRONOME SUBSTANTIVO", "PRONOME SUBSTANTIVO CONECTIVO PRONOME SUBSTANTIVO",
                    "SUJEITO|SUBSTANTIVO|SINTAGMA_VERBAL|ARTIGO|PRONOME|CONECTIVO|VERBO|ADJETIVO",
                    "ARTIGO|PRONOME|SUBSTANTIVO ARTIGO|PRONOME|SUBSTANTIVO"]
-    batch_test(input_tests, "ERRO")
+    batch_test(input_tests, "", false)
   end
 
   it "should not accept FIM_DE_FRASE" do
     input_tests = ["FIM_DE_FRASE"]
-    batch_test(input_tests, "ERRO")
+    batch_test(input_tests, "", false)
   end
 
   it "should not accept anything that ends with FRASE" do
     input_tests = ["QUALQUER COISA TERMINANDO COM FRASE"]
-    batch_test(input_tests, "ERRO")
+    batch_test(input_tests, "", false)
   end
 
   it "should accept SUJEITO FIM_DE_FRASE" do
@@ -144,7 +144,7 @@ describe Resin::CLI, "execute" do
   it "should not accept SUJEITO (ADVERBIO CONECTIVO?)+ FIM_DE_FRASE" do
     input_tests = ["SUJEITO ADVERBIO CONECTIVO FIM_DE_FRASE",
                    "SUJEITO ADVERBIO CONECTIVO ADVERBIO FIM_DE_FRASE"]
-    batch_test(input_tests, "ERRO")
+    batch_test(input_tests, "", false)
   end
 
   it "should accept SINTAGMA_ADJETIVO_SIMPLES (CONECTIVO SINTAGMA_ADJETIVO_SIMPLES)* SUJEITO FIM_DE_FRASE" do

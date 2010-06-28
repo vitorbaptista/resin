@@ -28,10 +28,10 @@ module Resin
                            ['SINTAGMA_ADVERBIAL', 'CONECTIVO', 'SUJEITO', 'SINTAGMA_ADJETIVO',  'FIM_DE_FRASE'],
                            ['SUJEITO', 'SINTAGMA_VERBAL', 'SINTAGMA_ADJETIVO',  'SINTAGMA_ADVERBIAL', 'FIM_DE_FRASE']] }
 
-    def self.execute(stdout=STDOUT, stdin=STDIN, log=Logger.new(STDERR))
+    def self.execute(stdout=STDOUT, stdin=STDIN, log=Logger.new(STDERR), arguments=[])
       @log = log
 
-      s = stdin.read
+      s = phrase = stdin.read
       @log.debug "Input: #{s.inspect}"
       s = s.gsub(/\n/, ' ').strip.split
       s.each_index { |i|
@@ -45,7 +45,14 @@ module Resin
         success = result && result.length == 1 && GOAL.keys.include?(result[0])
         break if success
       }
-      stdout.puts "ERRO" if !success && !s.empty?
+      if !success && !s.empty?
+        phrase = phrase.gsub(/\n/, ' ').strip.downcase
+        phrase = phrase.gsub(/ /, ', ').gsub(/\|/, ' ou ').gsub(/_/, ' ')
+        error_message = "Frase '#{phrase}' inválida"
+        @log.error error_message
+        stdout.puts error_message
+        `espeak -vpt -s95 "#{error_message}"` if !arguments.empty?
+      end
     end
 
     private
