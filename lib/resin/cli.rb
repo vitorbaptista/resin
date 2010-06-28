@@ -11,8 +11,8 @@ module Resin
              'SINTAGMA_ADJETIVO_SIMPLES'           => [['ADJETIVO'], ['SINTAGMA_SUBSTANTIVO_PREPOSICIONADO']],
              'SINTAGMA_ADVERBIAL'                  => [['ADVERBIO'], ['SINTAGMA_ADVERBIAL', 'ADVERBIO'],
                                                        ['SINTAGMA_ADVERBIAL', 'CONECTIVO', 'ADVERBIO'], ['SINTAGMA_SUBSTANTIVO_PREPOSICIONADO']],
-             'SINTAGMA_VERBAL'                     => [['VERBO'], ['SINTAGMA_VERBAL', 'VERBO']]}
-    GOAL  = {'FRASE'   => [['SUJEITO', 'FIM_DE_FRASE'],
+             'SINTAGMA_VERBAL'                     => [['VERBO'], ['SINTAGMA_VERBAL', 'VERBO']],
+             'FRASE'   => [['SUJEITO', 'FIM_DE_FRASE'],
                            ['SINTAGMA_VERBAL', 'FIM_DE_FRASE'],
                            ['SUJEITO', 'SINTAGMA_VERBAL', 'FIM_DE_FRASE'],
                            ['SINTAGMA_ADVERBIAL', 'CONECTIVO', 'SUJEITO', 'SINTAGMA_VERBAL', 'SINTAGMA_ADVERBIAL', 'FIM_DE_FRASE'],
@@ -22,11 +22,12 @@ module Resin
 
                            # Com sintagma adjetivo
                            ['SUJEITO', 'SINTAGMA_ADJETIVO', 'FIM_DE_FRASE'],
-                           ['SINTAGMA_VERBAL', 'SINTAGMA_ADJETIVO',  'FIM_DE_FRASE'],
-                           ['SUJEITO', 'SINTAGMA_VERBAL', 'SINTAGMA_ADJETIVO',  'FIM_DE_FRASE'],
+                           ['SINTAGMA_VERBAL', 'SINTAGMA_ADJETIVO', 'FIM_DE_FRASE'],
+                           ['SUJEITO', 'SINTAGMA_VERBAL', 'SINTAGMA_ADJETIVO', 'FIM_DE_FRASE'],
                            ['SINTAGMA_ADVERBIAL', 'CONECTIVO', 'SUJEITO', 'SINTAGMA_VERBAL', 'SINTAGMA_ADJETIVO',  'SINTAGMA_ADVERBIAL', 'FIM_DE_FRASE'],
-                           ['SINTAGMA_ADVERBIAL', 'CONECTIVO', 'SUJEITO', 'SINTAGMA_ADJETIVO',  'FIM_DE_FRASE'],
-                           ['SUJEITO', 'SINTAGMA_VERBAL', 'SINTAGMA_ADJETIVO',  'SINTAGMA_ADVERBIAL', 'FIM_DE_FRASE']] }
+                           ['SINTAGMA_ADVERBIAL', 'CONECTIVO', 'SUJEITO', 'SINTAGMA_ADJETIVO', 'FIM_DE_FRASE'],
+                           ['SUJEITO', 'SINTAGMA_VERBAL', 'SINTAGMA_ADJETIVO',  'SINTAGMA_ADVERBIAL', 'FIM_DE_FRASE']]}
+    GOALS = ['FRASE']
 
     def self.execute(stdout=STDOUT, stdin=STDIN, log=Logger.new(STDERR), arguments=[])
       @log = log
@@ -42,7 +43,7 @@ module Resin
       permute(s).each { |value|
         result = analyze_phrase(value)
         @log.debug "Result: #{result.inspect}"
-        success = result && result.length == 1 && GOAL.keys.include?(result[0])
+        success = result && result.length == 1 && GOALS.include?(result[0])
         break if success
       }
       if !success && !s.empty?
@@ -79,10 +80,7 @@ module Resin
         }
         @log.debug "Stack: #{stack.inspect}"
 
-        result = reduce!(stack, GOAL) 
-        @log.debug "Stack: #{stack.inspect}"
-
-        result
+        stack
     end
 
     def self.tem_erros_de_concordancia?(phrase)
@@ -93,17 +91,16 @@ module Resin
         flexoes.length > 1
     end
 
-    def self.reduce!(stack, rules = RULES)
+    def self.reduce!(stack)
         stack.length.downto(1) { |i|
-            rules.each { |rule, values|
+            RULES.each { |rule, values|
                 values.each { |value|
                     phrase = stack[-i..-1]
 
                     if phrase == value
                         @log.debug "Reduce: #{phrase.inspect} => #{rule.inspect}"
                         stack[-i..-1] = rule
-                        return self.reduce!(stack, rules) if rules == RULES
-                        return stack
+                        return self.reduce!(stack)
                     end
                 }
             }
