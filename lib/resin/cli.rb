@@ -72,9 +72,24 @@ module Resin
         stack.length.downto(1) { |i|
             rules.each { |rule, values|
                 values.each { |value|
-                    if stack[-i..-1] == value
-                        @log.debug "Reduce: #{stack[-i..-1].inspect} => #{rule.inspect}"
+                    value_sem_concordancia = value.map { |v| v.gsub(/@$/, '') }
+                    concordancia = ''
+                    concordancia = stack[-i..-1][0][-4..-1] if stack[-i..-1][0] =~ /\(.*\)$/
+                    phrase = stack[-i..-1]
+
+                    if value == value_sem_concordancia && phrase == value
+                        @log.debug "Reduce: #{phrase.inspect} => #{rule.inspect}"
                         stack[-i..-1] = rule
+                        return self.reduce!(stack, rules) if rules == RULES
+                        return stack
+                    end
+
+                    next if phrase.length != value.length
+
+                    value_com_concordancia = value.map { |v| v.gsub(/@$/, concordancia) }
+                    if phrase == value_com_concordancia
+                        @log.debug "Reduce: #{phrase.inspect} => #{rule.inspect}"
+                        stack[-i..-1] = "#{rule}#{concordancia}"
                         return self.reduce!(stack, rules) if rules == RULES
                         return stack
                     end
