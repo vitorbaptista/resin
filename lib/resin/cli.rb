@@ -53,7 +53,7 @@ module Resin
         error_message = "Frase '#{phrase}' inválida"
         @log.error error_message
         stdout.puts error_message
-        `espeak -vpt -s95 "#{error_message}"` if !arguments.empty?
+        `espeak -vpt -s130 "#{error_message}"` if !arguments.empty?
       end
     end
 
