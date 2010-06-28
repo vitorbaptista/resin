@@ -48,6 +48,8 @@ module Resin
       if !success && !s.empty?
         phrase = phrase.gsub(/\n/, ' ').strip.downcase
         phrase = phrase.gsub(/ /, ', ').gsub(/\|/, ' ou ').gsub(/_/, ' ')
+        phrase = phrase.gsub(/\(m/, ' masculino').gsub(/\(f/, ' feminino')
+        phrase = phrase.gsub(/s\)/, ' singular').gsub(/p\)/, ' plural')
         error_message = "Frase '#{phrase}' inválida"
         @log.error error_message
         stdout.puts error_message
