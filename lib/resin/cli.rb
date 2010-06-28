@@ -2,31 +2,31 @@ require 'logger'
 
 module Resin
   class CLI
-    RULES = {'SUJEITO'                             => [['SINTAGMA_SUBSTANTIVO']],
-             'SINTAGMA_SUBSTANTIVO'                => [['SINTAGMA_SUBSTANTIVO_SIMPLES'], ['SUJEITO', 'CONECTIVO', 'SINTAGMA_SUBSTANTIVO_SIMPLES']],
-             'SINTAGMA_SUBSTANTIVO_SIMPLES'        => [['SUBSTANTIVO'], ['ARTIGO', 'SUBSTANTIVO'], ['PRONOME'], ['ARTIGO', 'PRONOME'],
-                                                       ['SUJEITO', 'SUBSTANTIVO'], ['SUJEITO', 'SINTAGMA_ADJETIVO'], ['SINTAGMA_ADJETIVO', 'SUJEITO']],
-             'SINTAGMA_SUBSTANTIVO_PREPOSICIONADO' => [['PREPOSICAO', 'SINTAGMA_SUBSTANTIVO_SIMPLES']],
-             'SINTAGMA_ADJETIVO'                   => [['SINTAGMA_ADJETIVO_SIMPLES'], ['SINTAGMA_ADJETIVO', 'CONECTIVO', 'SINTAGMA_ADJETIVO']],
-             'SINTAGMA_ADJETIVO_SIMPLES'           => [['ADJETIVO'], ['SINTAGMA_SUBSTANTIVO_PREPOSICIONADO']],
-             'SINTAGMA_ADVERBIAL'                  => [['ADVERBIO'], ['SINTAGMA_ADVERBIAL', 'ADVERBIO'],
-                                                       ['SINTAGMA_ADVERBIAL', 'CONECTIVO', 'ADVERBIO'], ['SINTAGMA_SUBSTANTIVO_PREPOSICIONADO']],
+    RULES = {'SUJEITO'                             => [['SINTAGMA_SUBSTANTIVO@']],
+             'SINTAGMA_SUBSTANTIVO'                => [['SINTAGMA_SUBSTANTIVO_SIMPLES@'], ['SUJEITO@', 'CONECTIVO', 'SINTAGMA_SUBSTANTIVO_SIMPLES@']],
+             'SINTAGMA_SUBSTANTIVO_SIMPLES'        => [['SUBSTANTIVO@'], ['ARTIGO@', 'SUBSTANTIVO@'], ['PRONOME@'], ['ARTIGO@', 'PRONOME@'],
+                                                       ['SUJEITO@', 'SUBSTANTIVO@'], ['SUJEITO@', 'SINTAGMA_ADJETIVO@'], ['SINTAGMA_ADJETIVO@', 'SUJEITO@']],
+             'SINTAGMA_SUBSTANTIVO_PREPOSICIONADO' => [['PREPOSICAO@', 'SINTAGMA_SUBSTANTIVO_SIMPLES@']],
+             'SINTAGMA_ADJETIVO'                   => [['SINTAGMA_ADJETIVO_SIMPLES@'], ['SINTAGMA_ADJETIVO@', 'CONECTIVO', 'SINTAGMA_ADJETIVO@']],
+             'SINTAGMA_ADJETIVO_SIMPLES'           => [['ADJETIVO@'], ['SINTAGMA_SUBSTANTIVO_PREPOSICIONADO@']],
+             'SINTAGMA_ADVERBIAL'                  => [['ADVERBIO@'], ['SINTAGMA_ADVERBIAL@', 'ADVERBIO@'],
+                                                       ['SINTAGMA_ADVERBIAL@', 'CONECTIVO', 'ADVERBIO@'], ['SINTAGMA_SUBSTANTIVO_PREPOSICIONADO@']],
              'SINTAGMA_VERBAL'                     => [['VERBO'], ['SINTAGMA_VERBAL', 'VERBO']]}
-    GOAL  = {'FRASE'   => [['SUJEITO', 'FIM_DE_FRASE'],
+    GOAL  = {'FRASE'   => [['SUJEITO@', 'FIM_DE_FRASE'],
                            ['SINTAGMA_VERBAL', 'FIM_DE_FRASE'],
-                           ['SUJEITO', 'SINTAGMA_VERBAL', 'FIM_DE_FRASE'],
-                           ['SINTAGMA_ADVERBIAL', 'CONECTIVO', 'SUJEITO', 'SINTAGMA_VERBAL', 'SINTAGMA_ADVERBIAL', 'FIM_DE_FRASE'],
-                           ['SINTAGMA_ADVERBIAL', 'CONECTIVO', 'SUJEITO', 'FIM_DE_FRASE'],
-                           ['SUJEITO', 'SINTAGMA_VERBAL', 'SINTAGMA_ADVERBIAL', 'FIM_DE_FRASE'],
-                           ['SINTAGMA_ADVERBIAL', 'FIM_DE_FRASE'],
+                           ['SUJEITO@', 'SINTAGMA_VERBAL', 'FIM_DE_FRASE'],
+                           ['SINTAGMA_ADVERBIAL@', 'CONECTIVO', 'SUJEITO@', 'SINTAGMA_VERBAL', 'SINTAGMA_ADVERBIAL', 'FIM_DE_FRASE'],
+                           ['SINTAGMA_ADVERBIAL@', 'CONECTIVO', 'SUJEITO@', 'FIM_DE_FRASE'],
+                           ['SUJEITO@', 'SINTAGMA_VERBAL', 'SINTAGMA_ADVERBIAL@', 'FIM_DE_FRASE'],
+                           ['SINTAGMA_ADVERBIAL@', 'FIM_DE_FRASE'],
 
                            # Com sintagma adjetivo
-                           ['SUJEITO', 'SINTAGMA_ADJETIVO', 'FIM_DE_FRASE'],
-                           ['SINTAGMA_VERBAL', 'SINTAGMA_ADJETIVO',  'FIM_DE_FRASE'],
-                           ['SUJEITO', 'SINTAGMA_VERBAL', 'SINTAGMA_ADJETIVO',  'FIM_DE_FRASE'],
-                           ['SINTAGMA_ADVERBIAL', 'CONECTIVO', 'SUJEITO', 'SINTAGMA_VERBAL', 'SINTAGMA_ADJETIVO',  'SINTAGMA_ADVERBIAL', 'FIM_DE_FRASE'],
-                           ['SINTAGMA_ADVERBIAL', 'CONECTIVO', 'SUJEITO', 'SINTAGMA_ADJETIVO',  'FIM_DE_FRASE'],
-                           ['SUJEITO', 'SINTAGMA_VERBAL', 'SINTAGMA_ADJETIVO',  'SINTAGMA_ADVERBIAL', 'FIM_DE_FRASE']] }
+                           ['SUJEITO@', 'SINTAGMA_ADJETIVO@', 'FIM_DE_FRASE'],
+                           ['SINTAGMA_VERBAL', 'SINTAGMA_ADJETIVO@',  'FIM_DE_FRASE'],
+                           ['SUJEITO@', 'SINTAGMA_VERBAL', 'SINTAGMA_ADJETIVO@',  'FIM_DE_FRASE'],
+                           ['SINTAGMA_ADVERBIAL@', 'CONECTIVO', 'SUJEITO@', 'SINTAGMA_VERBAL', 'SINTAGMA_ADJETIVO@',  'SINTAGMA_ADVERBIAL@', 'FIM_DE_FRASE'],
+                           ['SINTAGMA_ADVERBIAL@', 'CONECTIVO', 'SUJEITO@', 'SINTAGMA_ADJETIVO@',  'FIM_DE_FRASE'],
+                           ['SUJEITO@', 'SINTAGMA_VERBAL', 'SINTAGMA_ADJETIVO@',  'SINTAGMA_ADVERBIAL@', 'FIM_DE_FRASE']] }
 
     def self.execute(stdout=STDOUT, stdin=STDIN, log=Logger.new(STDERR))
       @log = log
